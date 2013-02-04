@@ -4,6 +4,9 @@
 # Logs
 *.dump
 
+# Swap
+.swp
+
 # Configuration files
 *.conf
 
