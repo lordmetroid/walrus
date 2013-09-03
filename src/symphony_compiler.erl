@@ -1,90 +1,63 @@
 -module(symphony_compiler).
 
 -export([
-	scan/1
+	scan/2
 ]).
 
 %% ----------------------------------------------------------------------------
 % @spec
 % @doc
 %% ----------------------------------------------------------------------------
-scan(Template) ->
-	scan(Template, {1,1}, [{text,{1,1},[]}], text).
-
-scan([], _, Tokens, text) ->
-	lists:reverse(finalize(Tokens));
-
+scan(Template, Filename) ->
+	scan(Template, Filename,{1,1}, [{text,[]}],[], text).
 
 %% Text
-scan("<%" ++ Rest, {Row,Column}, Tokens, text) ->
-	scan(Rest, {Row,Column+2}, Tokens, start);
+scan("\n" ++ Rest, Filename,{Row,_Column}, Tokens,Errors, text) ->
+	scan(Rest, Filename,{Row+1,1}, add("\n",Tokens),Errors, text);
+scan([Character | Rest], Filename,{Row,Column}, Tokens,Errors, text) ->
+	scan(Rest, Filename,{Row,Column+1}, add(Character,Tokens),Errors, text);
 
-scan("\n" ++ Rest, {Row,_Column}, Tokens, text) ->
-	scan(Rest, {Row+1,1}, append("\n",Tokens), text);
+%% Start of tag
+scan("<!" ++ Rest, Filename,{Row,Column}, Tokens,Errors, text) ->
+	scan(Rest, Filename,{Row,Column+2}, add(tag,Tokens),Errors, start_tag);
 
-scan([Character | Rest], {Row,Column}, Tokens, text) ->
-	scan(Rest, {Row,Column+1}, append(Character,Tokens), text);
+%% Spacers in start of tag
+scan(" " ++ Rest, Filename,{Row,Column}, Tokens,Errors, start_tag) ->
+	scan(Rest, Filename,{Row,Column+1}, Tokens,Errors, start_tag);
+scan("\t" ++ Rest, Filename,{Row,Column}, Tokens,Errors, start_tag) ->
+	scan(Rest, Filename,{Row,Column+1}, Tokens,Errors, start_tag);
+scan("\n" ++ Rest, Filename,{Row,_Column}, Tokens,Errors, start_tag) ->
+	scan(Rest, Filename,{Row+1,1}, Tokens,Errors, start_tag);
 
+%% Spacers at end of variable name
+scan(" " ++ Rest, Filename,{Row,Column}, Tokens,Errors, variable) ->
+	scan(Rest, Filename,{Row,Column+1}, Tokens,Errors, end_tag);
+scan("\t" ++ Rest, Filename,{Row,Column}, Tokens,Errors, variable) ->
+	scan(Rest, Filename,{Row,Column+1}, Tokens,Errors, end_tag);
+scan("\n" ++ Rest, Filename,{Row,_Column}, Tokens,Errors, variable) ->
+	scan(Rest, Filename,{Row+1,1}, Tokens,Errors, end_tag);
+scan(" " ++ Rest, Filename,{Row,Column}, Tokens,Errors, end_tag) ->
+	scan(Rest, Filename,{Row,Column}, Tokens,Errors, end_tag);
+scan("\t" ++ Rest, Filename,{Row,Column}, Tokens,Errors, end_tag) ->
+	scan(Rest, Filename,{Row,Column+1}, Tokens,Errors, end_tag);
+scan("\n" ++ Rest, Filename,{Row,_Column}, Tokens,Errors, end_tag) ->
+	scan(Rest, Filename,{Row+1,1}, Tokens,Errors, end_tag);
 
-%% Open tag
-scan(" " ++ Rest, {Row,Column}, Tokens, start) ->
-	scan(Rest, {Row,Column+1}, Tokens, start);
-
-scan("\t" ++ Rest, {Row,Column}, Tokens, start) ->
-	scan(Rest, {Row,Column+1}, Tokens, start);
-
-scan("\n" ++ Rest, {Row,_Column}, Tokens, start) ->
-	scan(Rest, {Row+1,1}, Tokens, start);
-
-%% Create new variable
-scan([Character | Rest], {Row,Column}, Tokens, start) ->
-	UpdatedTokens = add({variable,{Row,Column},[]}, Tokens),
-	scan(Rest, {Row,Column+1}, append(Character,UpdatedTokens), variable);
-
-%% Variable
-
-scan(" " ++ Rest, {Row,Column}, Tokens, variable) ->
-	scan(Rest, {Row,Column+1}, Tokens, stop);
-
-scan("\t" ++ Rest, {Row,Column}, Tokens, variable) ->
-	scan(Rest, {Row,Column+1}, Tokens, stop);
-
-scan("\n" ++ Rest, {Row,_Column}, Tokens, variable) ->
-	scan(Rest, {Row+1,1}, Tokens, stop);
-
-scan("%>" ++ Rest, {Row,Column}, Tokens, variable) ->
-	UpdatedTokens = add({text,{Row,Column+2},[]}, Tokens),
-	scan(Rest, {Row,Column+2}, UpdatedTokens, text);
-
-scan([Character | Rest], {Row,Column}, Tokens, variable) ->
-	scan(Rest, {Row,Column+1}, append(Character,Tokens), variable);
-
-%% Stop tag
-scan("%>" ++ Rest, {Row,Column}, Tokens, stop) ->
-	UpdatedTokens = add({text,{Row,Column+2},[]}, Tokens),
-	scan(Rest, {Row,Column+2}, UpdatedTokens, text).
-	
-
-
+%% End of tag
+scan("!>" ++ Rest, Filename,{Row,Column}, Tokens,Errors, end_tag) ->
+	scan(Rest, Filename,{Row,Column+2}, add(text,Tokens),Errors, text);
+scan("!>" ++ Rest, Filename,{Row,Column}, Tokens,Errors, variable) ->
+	scan(Rest, Filename,{Row,Column+2}, add(text,Tokens),Errors, text).
 
 %% ----------------------------------------------------------------------------
 % @spec
 % @doc
 %% ----------------------------------------------------------------------------
-add(NewToken, Tokens) ->
-	[NewToken | finalize(Tokens)].
+add(tag, Tokens) ->
+	ok;
+add(text, Tokens) ->
+	ok;
+add(Character, Tokens) ->
+	ok.
 
-%% ----------------------------------------------------------------------------
-% @spec
-% @doc
-%% ----------------------------------------------------------------------------
-append(Character, [{Type,Position,Content} | Rest]) ->
-	[{Type,Position,[Character | Content]} | Rest].
-
-%% ----------------------------------------------------------------------------
-% @spec
-% @doc
-%% ----------------------------------------------------------------------------
-finalize([{Type,Position,Content} | Rest]) ->
-	[{Type,Position,lists:reverse(Content)} | Rest].
 
