@@ -1,0 +1,16 @@
+
+File:
+	"Text" and "Variables"
+
+Variables:
+	"Variable start" [Spacer] "Variable name" [Spacer] "Variable end"
+
+		Variable start:
+			<!
+
+		Variable name:
+			Any character A-z 
+
+		Variable end:
+			!>
+	
