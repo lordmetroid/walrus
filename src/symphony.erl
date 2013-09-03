@@ -19,7 +19,6 @@ compile_file(Filename,Encoding) ->
 		{ok, Binary} ->
 			Template = unicode:characters_to_list(Binary,Encoding),
 			compile(Template, Filename);
-
 		{error, Reason} ->
 			{error, Reason}
 	end.
