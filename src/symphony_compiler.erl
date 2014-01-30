@@ -19,7 +19,7 @@ scan([Character | Rest], Filename,{Row,Column}, Tokens,Errors, text) ->
 
 %% Start of tag
 scan("<!" ++ Rest, Filename,{Row,Column}, Tokens,Errors, text) ->
-	scan(Rest, Filename,{Row,Column+2}, add(tag,Tokens),Errors, start_tag);
+	scan(Rest, Filename,{Row,Column+2}, create(tag,Tokens),Errors, start_tag);
 
 %% Spacers in start of tag
 scan(" " ++ Rest, Filename,{Row,Column}, Tokens,Errors, start_tag) ->
@@ -45,24 +45,18 @@ scan("\n" ++ Rest, Filename,{Row,_Column}, Tokens,Errors, end_tag) ->
 
 %% End of tag
 scan("!>" ++ Rest, Filename,{Row,Column}, Tokens,Errors, end_tag) ->
-	scan(Rest, Filename,{Row,Column+2}, add(text,Tokens),Errors, text);
+	scan(Rest, Filename,{Row,Column+2}, create(text,Tokens),Errors, text);
 scan("!>" ++ Rest, Filename,{Row,Column}, Tokens,Errors, variable) ->
-	scan(Rest, Filename,{Row,Column+2}, add(text,Tokens),Errors, text).
+	scan(Rest, Filename,{Row,Column+2}, create(text,Tokens),Errors, text).
 
 %% ----------------------------------------------------------------------------
-% @spec
-% @doc Add new tag token
+% @spec 
+% @doc Create new token
 %% ----------------------------------------------------------------------------
-add(tag, Tokens) ->
-	ok;
-
-%% ----------------------------------------------------------------------------
-% @spec
-% @doc Add new text
-%% ----------------------------------------------------------------------------	
-add(text, Tokens) ->
-	ok;
-
+create(NewTokenType, Tokens) ->
+	[{Type, String} | Rest] = Tokens,
+	[{NewTokenType,[]}, {Type, lists:reverse(String)} | Rest].
+	
 %% ----------------------------------------------------------------------------
 % @spec
 % @doc Add new character to token
@@ -70,5 +64,3 @@ add(text, Tokens) ->
 add(Character, Tokens) ->
 	[{Type, String} | Rest] = Tokens,
 	[{Type, [Character | String]}, Rest].
-
-
