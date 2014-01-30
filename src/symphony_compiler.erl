@@ -49,14 +49,20 @@ scan("!>" ++ Rest, Filename,{Row,Column}, Tokens,Errors, end_tag) ->
 scan("!>" ++ Rest, Filename,{Row,Column}, Tokens,Errors, variable) ->
 	scan(Rest, Filename,{Row,Column+2}, create(text,Tokens),Errors, text).
 
+%% End of file
+scan([], Filename,{Row,Column}, Tokens,Errors, end_tag) ->
+	%% TODO print errors?
+	[CurrentToken | Rest] = Tokens,
+	lists:reverse([finalize(CurrentToken) | Rest]).
+	
 %% ----------------------------------------------------------------------------
 % @spec create(atom, List) -> Tokens
 % @doc Create new token
 %% ----------------------------------------------------------------------------
-create(NewTokenType, Tokens) ->
-	[{Type, String} | Rest] = Tokens,
-	[{NewTokenType,[]}, {Type, lists:reverse(String)} | Rest].
-	
+create(Type, Tokens) ->
+	[CurrentToken | Rest] = Tokens,
+	[{Type,[]}, finalize(CurrentToken) | Rest].
+
 %% ----------------------------------------------------------------------------
 % @spec add(List::string(), List) -> Tokens
 % @doc Add new character to token
@@ -64,3 +70,10 @@ create(NewTokenType, Tokens) ->
 add(Character, Tokens) ->
 	[{Type, String} | Rest] = Tokens,
 	[{Type, [Character | String]}, Rest].
+
+%% ----------------------------------------------------------------------------
+% @spec finalize(atom, List) -> Token
+% @doc Order the reverse token content string
+%% ----------------------------------------------------------------------------	
+finalize({Type, String}) ->
+	 {Type, lists:reverse(String)}.
