@@ -1,4 +1,4 @@
-﻿-module(symphony).
+-module(symphony).
 
 -export([
 	compile_file/1,

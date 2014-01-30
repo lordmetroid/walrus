@@ -1,4 +1,4 @@
-﻿-module(symphony_compiler).
+-module(symphony_compiler).
 
 -export([
 	scan/2
@@ -47,10 +47,10 @@ scan("\n" ++ Rest, Filename,{Row,_Column}, Tokens,Errors, end_tag) ->
 scan("!>" ++ Rest, Filename,{Row,Column}, Tokens,Errors, end_tag) ->
 	scan(Rest, Filename,{Row,Column+2}, create(text,Tokens),Errors, text);
 scan("!>" ++ Rest, Filename,{Row,Column}, Tokens,Errors, variable) ->
-	scan(Rest, Filename,{Row,Column+2}, create(text,Tokens),Errors, text).
+	scan(Rest, Filename,{Row,Column+2}, create(text,Tokens),Errors, text);
 
 %% End of file
-scan([], Filename,{Row,Column}, Tokens,Errors, end_tag) ->
+scan([], _Filename,{_Row,_Column}, Tokens,_Errors, end_tag) ->
 	%%TODO: print errors?
 	[CurrentToken | Rest] = Tokens,
 	lists:reverse([finalize(CurrentToken) | Rest]).
