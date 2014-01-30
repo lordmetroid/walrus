@@ -51,7 +51,7 @@ scan("!>" ++ Rest, Filename,{Row,Column}, Tokens,Errors, variable) ->
 
 %% End of file
 scan([], Filename,{Row,Column}, Tokens,Errors, end_tag) ->
-	%% TODO print errors?
+	%%TODO: print errors?
 	[CurrentToken | Rest] = Tokens,
 	lists:reverse([finalize(CurrentToken) | Rest]).
 	
