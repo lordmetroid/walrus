@@ -1,4 +1,4 @@
--module(symphony).
+﻿-module(symphony).
 
 -export([
 	compile_file/1,
@@ -12,6 +12,8 @@
 % @doc
 %% ----------------------------------------------------------------------------
 compile_file(Filename) ->
+	%%TODO: Detect encoding of file
+	%%TODO: Convert file to utf8
 	compile_file(Filename,utf8).
 
 compile_file(Filename,Encoding) ->
