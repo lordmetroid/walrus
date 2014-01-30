@@ -5,7 +5,7 @@
 ]).
 
 %% ----------------------------------------------------------------------------
-% @spec
+% @spec scan(List::string(), List::string()) -> Tokens::List
 % @doc Scan and parse template
 %% ----------------------------------------------------------------------------
 scan(Template, Filename) ->
@@ -50,7 +50,7 @@ scan("!>" ++ Rest, Filename,{Row,Column}, Tokens,Errors, variable) ->
 	scan(Rest, Filename,{Row,Column+2}, create(text,Tokens),Errors, text).
 
 %% ----------------------------------------------------------------------------
-% @spec 
+% @spec create(atom, List) -> Tokens
 % @doc Create new token
 %% ----------------------------------------------------------------------------
 create(NewTokenType, Tokens) ->
@@ -58,7 +58,7 @@ create(NewTokenType, Tokens) ->
 	[{NewTokenType,[]}, {Type, lists:reverse(String)} | Rest].
 	
 %% ----------------------------------------------------------------------------
-% @spec
+% @spec add(List::string(), List) -> Tokens
 % @doc Add new character to token
 %% ----------------------------------------------------------------------------
 add(Character, Tokens) ->
