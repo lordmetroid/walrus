@@ -6,7 +6,7 @@
 
 %% ----------------------------------------------------------------------------
 % @spec
-% @doc Scan and parse template to token list
+% @doc Scan and parse template
 %% ----------------------------------------------------------------------------
 scan(Template, Filename) ->
 	scan(Template, Filename,{1,1}, [{text,[]}],[], text).
@@ -68,6 +68,7 @@ add(text, Tokens) ->
 % @doc Add new character to token
 %% ----------------------------------------------------------------------------
 add(Character, Tokens) ->
-	ok.
+	[{Type, String} | Rest] = Tokens,
+	[{Type, [Character | String]}, Rest].
 
 
