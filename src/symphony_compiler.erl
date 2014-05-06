@@ -15,7 +15,7 @@ scan(Template, Filename) ->
 scan([], _Filename,{_Row,_Column}, Tokens,_Errors, Type) ->
 	%%TODO: print errors?
 	[CurrentToken | Rest] = Tokens,
-	lists:reverse([finalize(CurrentToken) | Rest]).
+	lists:reverse([finalize(CurrentToken) | Rest]);
 
 %% Text special characters
 scan("\n" ++ Rest, Filename,{Row,_Column}, Tokens,Errors, text) ->
@@ -36,7 +36,7 @@ scan("\n" ++ Rest, Filename,{Row,_Column}, Tokens,Errors, tag) ->
 
 %% Add character
 scan([Character | Rest], Filename,{Row,Column}, Tokens,Errors, Type) ->
-	scan(Rest, Filename,{Row,Column+1}, add(Character,Tokens),Errors, Type);
+	scan(Rest, Filename,{Row,Column+1}, add(Character,Tokens),Errors, Type).
 
 %% ----------------------------------------------------------------------------
 % @spec create(atom, List) -> Tokens
