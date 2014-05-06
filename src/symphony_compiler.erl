@@ -12,7 +12,7 @@ scan(Template, Filename) ->
 	scan(Template, Filename,{1,1}, [{text,[]}],[], text).
 
 %% End of file
-scan([], _Filename,{_Row,_Column}, Tokens,_Errors, Type) ->
+scan([], _Filename,{_Row,_Column}, Tokens,_Errors, _Type) ->
 	%%TODO: print errors?
 	[CurrentToken | Rest] = Tokens,
 	lists:reverse([finalize(CurrentToken) | Rest]);
@@ -52,7 +52,7 @@ create(Type, Tokens) ->
 %% ----------------------------------------------------------------------------
 add(Character, Tokens) ->
 	[{Type, String} | Rest] = Tokens,
-	[{Type, [Character | String]}, Rest].
+	[{Type, [Character | String]} | Rest].
 
 %% ----------------------------------------------------------------------------
 % @spec finalize(atom, List) -> Token
