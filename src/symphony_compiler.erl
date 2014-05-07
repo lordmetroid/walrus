@@ -13,7 +13,7 @@ scan(Template, Filename) ->
 
 %% End of file
 scan([], _Filename,{_Row,_Column}, Tokens,_Errors, _Type) ->
-	%%TODO: print errors?
+	%%TODO: print errors
 	[CurrentToken | Rest] = Tokens,
 	lists:reverse([finalize(CurrentToken) | Rest]);
 
@@ -22,6 +22,7 @@ scan("\n" ++ Rest, Filename,{Row,_Column}, Tokens,Errors, text) ->
 	scan(Rest, Filename,{Row+1,1}, add("\n",Tokens),Errors, text);
 
 %% Tag special characters
+%%TODO: Find misplaced start and end tag token errors
 scan("<!" ++ Rest, Filename,{Row,Column}, Tokens,Errors, text) ->
 	scan(Rest, Filename,{Row,Column+2}, create(tag,Tokens),Errors, tag);
 scan("!>" ++ Rest, Filename,{Row,Column}, Tokens,Errors, tag) ->
@@ -36,6 +37,8 @@ scan("\n" ++ Rest, Filename,{Row,_Column}, Tokens,Errors, tag) ->
 
 %% Add character
 scan([Character | Rest], Filename,{Row,Column}, Tokens,Errors, Type) ->
+	%%TODO: Allow only alphanumerical in tags
+	%%TODO: Find variable-name errors
 	scan(Rest, Filename,{Row,Column+1}, add(Character,Tokens),Errors, Type).
 
 %% ----------------------------------------------------------------------------
