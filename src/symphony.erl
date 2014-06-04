@@ -18,11 +18,11 @@ compile_file(Filename) ->
 
 compile_file(Filename,Encoding) ->
 	case file:read_file(Filename) of
+		{error, Reason} ->
+			{error, Reason};
 		{ok, Binary} ->
 			Template = unicode:characters_to_list(Binary,Encoding),
-			compile(Template, Filename);
-		{error, Reason} ->
-			{error, Reason}
+			compile(Template, Filename)
 	end.
 
 %% ----------------------------------------------------------------------------
