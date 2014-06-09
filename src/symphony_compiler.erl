@@ -62,4 +62,4 @@ add(Character, Tokens) ->
 % @doc Order the reverse token content string
 %% ----------------------------------------------------------------------------	
 finalize({Type, String}) ->
-	 {Type, lists:reverse(String)}.
+	 {Type, lists:flatten(lists:reverse(String))}.
