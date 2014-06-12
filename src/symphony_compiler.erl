@@ -5,8 +5,8 @@
 ]).
 
 %% ----------------------------------------------------------------------------
-% @spec scan(List::string(), List::string()) -> Tokens::List
-% @doc Scan and parse template
+% @spec scan(string(), string()) -> erlsyntax()
+% @doc Scan and parse template into erlang syntax form
 %% ----------------------------------------------------------------------------
 scan(Template, Filename) ->
 	scan(Template, Filename,{1,1}, [{text,[]}],[], text).
@@ -37,8 +37,8 @@ scan("\n" ++ Rest, Filename,{Row,_Column}, Tokens,Errors, tag) ->
 
 %% Add character
 scan([Character | Rest], Filename,{Row,Column}, Tokens,Errors, Type) ->
-	%%TODO: Allow only alphanumerical in tags
-	%%TODO: Find variable-name errors
+	%% TODO: Allow only alphanumerical in tags
+	%% TODO: Find variable-name errors
 	scan(Rest, Filename,{Row,Column+1}, add(Character,Tokens),Errors, Type).
 
 %% ----------------------------------------------------------------------------
@@ -62,4 +62,5 @@ add(Character, Tokens) ->
 % @doc Order the reverse token content string
 %% ----------------------------------------------------------------------------	
 finalize({Type, String}) ->
-	 {Type, lists:flatten(lists:reverse(String))}.
+	%% TODO: Convert token to erl_syntax()
+	{Type, lists:flatten(lists:reverse(String))}.

@@ -36,5 +36,6 @@ make(Template) ->
 	%% Compile without a filepath
 	compile(Template, []).
 
-make(Template, FilePath) when is_list(Template) ->	
+make(Template, FilePath) when is_list(Template) ->
+	%% TODO: Add render() functionality
 	symphony_compiler:scan(Template, FilePath).
