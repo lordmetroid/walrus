@@ -1,37 +1,40 @@
 -module(symphony).
 
 -export([
-	compile_file/1,
-	compile_file/2,
-	compile/1
+	make_file/1,
+	make_file/2,
+	make/1
 ]).
 
+%% ----------------------------------------------------------------------------
+% Template compilation API
+%% ----------------------------------------------------------------------------
 
 %% ----------------------------------------------------------------------------
-% @spec
-% @doc
+% @spec compile_file(FilePath) -> syntaxTree()
+% @doc Compile a view file
 %% ----------------------------------------------------------------------------
-compile_file(Filename) ->
+make_file(FilePath) ->
 	%%TODO: Detect encoding of file
-	%%TODO: Convert file to utf8
-	compile_file(Filename,utf8).
+	%%TODO: Convert string to utf8 if necessary
+	make_file(FilePath,utf8).
 
-compile_file(Filename,Encoding) ->
-	case file:read_file(Filename) of
+make_file(FilePath,Encoding) ->
+	case file:read_file(FilePath) of
 		{error, Reason} ->
 			{error, Reason};
 		{ok, Binary} ->
 			Template = unicode:characters_to_list(Binary,Encoding),
-			compile(Template, Filename)
+			make(Template, FilePath)
 	end.
 
 %% ----------------------------------------------------------------------------
-% @spec
-% @doc
+% @spec compile(Template) -> syntaxTree()
+% @doc Compile template string
 %% ----------------------------------------------------------------------------
-compile(Template) ->
-	compile(Template,"list").
+make(Template) ->
+	%% Compile without a filepath
+	compile(Template, []).
 
-compile(Template, Filename) when is_list(Template) ->
-	symphony_compiler:scan(Template, Filename).
-
+make(Template, FilePath) when is_list(Template) ->	
+	symphony_compiler:scan(Template, FilePath).
