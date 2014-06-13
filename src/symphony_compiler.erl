@@ -22,22 +22,22 @@ scan("\n" ++ Rest, Filename,{Row,_Column}, Tokens,Errors, text) ->
 	scan(Rest, Filename,{Row+1,1}, add("\n",Tokens),Errors, text);
 
 %% Tag special characters
-%%TODO: Find misplaced start and end tag token errors
+%%TODO: Find misplaced start and end variable token errors
 scan("<!" ++ Rest, Filename,{Row,Column}, Tokens,Errors, text) ->
-	scan(Rest, Filename,{Row,Column+2}, create(tag,Tokens),Errors, tag);
-scan("!>" ++ Rest, Filename,{Row,Column}, Tokens,Errors, tag) ->
+	scan(Rest, Filename,{Row,Column+2}, create(variable,Tokens),Errors, variable);
+scan("!>" ++ Rest, Filename,{Row,Column}, Tokens,Errors, variable) ->
 	scan(Rest, Filename,{Row,Column+2}, create(text,Tokens),Errors, text);
 
-scan(" " ++ Rest, Filename,{Row,Column}, Tokens,Errors, tag) ->
-	scan(Rest, Filename,{Row,Column+1}, Tokens,Errors, tag);
-scan("\t" ++ Rest, Filename,{Row,Column}, Tokens,Errors, tag) ->
-	scan(Rest, Filename,{Row,Column+1}, Tokens,Errors, tag);
-scan("\n" ++ Rest, Filename,{Row,_Column}, Tokens,Errors, tag) ->
-	scan(Rest, Filename,{Row+1,1}, Tokens,Errors, tag);
+scan(" " ++ Rest, Filename,{Row,Column}, Tokens,Errors, variable) ->
+	scan(Rest, Filename,{Row,Column+1}, Tokens,Errors, variable);
+scan("\t" ++ Rest, Filename,{Row,Column}, Tokens,Errors, variable) ->
+	scan(Rest, Filename,{Row,Column+1}, Tokens,Errors, variable);
+scan("\n" ++ Rest, Filename,{Row,_Column}, Tokens,Errors, variable) ->
+	scan(Rest, Filename,{Row+1,1}, Tokens,Errors, variable);
 
 %% Add character
 scan([Character | Rest], Filename,{Row,Column}, Tokens,Errors, Type) ->
-	%% TODO: Allow only alphanumerical in tags
+	%% TODO: Allow only alphanumerical in variables
 	%% TODO: Find variable-name errors
 	scan(Rest, Filename,{Row,Column+1}, add(Character,Tokens),Errors, Type).
 
@@ -62,5 +62,13 @@ add(Character, Tokens) ->
 % @doc Order the reverse token content string
 %% ----------------------------------------------------------------------------	
 finalize({Type, String}) ->
-	%% TODO: Convert token to erl_syntax()
-	{Type, lists:flatten(lists:reverse(String))}.
+	case Type of
+		text ->
+			%% Convert the token to a section of text
+			erl_syntax:string(lists:flatten(lists:reverse(String)));
+		variable ->
+			%% Convert the token to a variable
+			[First | Rest] = lists:flatten(lists:reverse(String)),
+			erl_syntax:variable([string:to_upper(First) | Rest])
+	end.
+	
