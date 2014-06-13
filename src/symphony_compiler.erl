@@ -22,23 +22,23 @@ scan("\n" ++ Rest, Filename,{Row,_Column}, Tokens,Errors, text) ->
 	scan(Rest, Filename,{Row+1,1}, add("\n",Tokens),Errors, text);
 
 %% Tag special characters
-%%TODO: Find misplaced start and end variable token errors
+%%TODO: Find misplaced start and end tag token errors
 scan("<!" ++ Rest, Filename,{Row,Column}, Tokens,Errors, text) ->
-	scan(Rest, Filename,{Row,Column+2}, create(variable,Tokens),Errors, variable);
-scan("!>" ++ Rest, Filename,{Row,Column}, Tokens,Errors, variable) ->
+	scan(Rest, Filename,{Row,Column+2}, create(tag,Tokens),Errors, tag);
+scan("!>" ++ Rest, Filename,{Row,Column}, Tokens,Errors, tag) ->
 	scan(Rest, Filename,{Row,Column+2}, create(text,Tokens),Errors, text);
 
-scan(" " ++ Rest, Filename,{Row,Column}, Tokens,Errors, variable) ->
-	scan(Rest, Filename,{Row,Column+1}, Tokens,Errors, variable);
-scan("\t" ++ Rest, Filename,{Row,Column}, Tokens,Errors, variable) ->
-	scan(Rest, Filename,{Row,Column+1}, Tokens,Errors, variable);
-scan("\n" ++ Rest, Filename,{Row,_Column}, Tokens,Errors, variable) ->
-	scan(Rest, Filename,{Row+1,1}, Tokens,Errors, variable);
+scan(" " ++ Rest, Filename,{Row,Column}, Tokens,Errors, tag) ->
+	scan(Rest, Filename,{Row,Column+1}, Tokens,Errors, tag);
+scan("\t" ++ Rest, Filename,{Row,Column}, Tokens,Errors, tag) ->
+	scan(Rest, Filename,{Row,Column+1}, Tokens,Errors, tag);
+scan("\n" ++ Rest, Filename,{Row,_Column}, Tokens,Errors, tag) ->
+	scan(Rest, Filename,{Row+1,1}, Tokens,Errors, tag);
 
 %% Add character
 scan([Character | Rest], Filename,{Row,Column}, Tokens,Errors, Type) ->
-	%% TODO: Allow only alphanumerical in variables
-	%% TODO: Find variable-name errors
+	%% TODO: Allow only alphanumerical in tags
+	%% TODO: Find tag-name errors
 	scan(Rest, Filename,{Row,Column+1}, add(Character,Tokens),Errors, Type).
 
 %% ----------------------------------------------------------------------------
@@ -66,9 +66,9 @@ finalize({Type, String}) ->
 		text ->
 			%% Convert the token to a section of text
 			erl_syntax:string(lists:flatten(lists:reverse(String)));
-		variable ->
-			%% Convert the token to a variable
+		tag ->
+			%% Convert the token to a tag
 			[First | Rest] = lists:flatten(lists:reverse(String)),
-			erl_syntax:variable([string:to_upper(First) | Rest])
+			erl_syntax:tag([string:to_upper(First) | Rest])
 	end.
 	
