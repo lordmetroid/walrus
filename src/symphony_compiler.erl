@@ -22,7 +22,7 @@ scan("\n" ++ Rest, Filename,{Row,_Column}, Tokens,Errors, text) ->
 	scan(Rest, Filename,{Row+1,1}, add("\n",Tokens),Errors, text);
 
 %% Tag special characters
-%%TODO: Find misplaced start and end tag token errors
+%% TODO: Find misplaced start and end tag token errors
 scan("<!" ++ Rest, Filename,{Row,Column}, Tokens,Errors, text) ->
 	scan(Rest, Filename,{Row,Column+2}, create(tag,Tokens),Errors, tag);
 scan("!>" ++ Rest, Filename,{Row,Column}, Tokens,Errors, tag) ->
@@ -46,8 +46,8 @@ scan([Character | Rest], Filename,{Row,Column}, Tokens,Errors, Type) ->
 % @doc Create new token
 %% ----------------------------------------------------------------------------
 create(Type, Tokens) ->
-	[CurrentToken | Rest] = Tokens,
-	[{Type,[]}, finalize(CurrentToken) | Rest].
+	[Token | Rest] = Tokens,
+	[{Type,[]}, finalize(Token) | Rest].
 
 %% ----------------------------------------------------------------------------
 % @spec add(List::string(), List) -> Tokens
@@ -58,7 +58,7 @@ add(Character, Tokens) ->
 	[{Type, [Character | String]} | Rest].
 
 %% ----------------------------------------------------------------------------
-% @spec finalize(atom, List) -> Token
+% @spec finalize(atom, string()) -> Token
 % @doc Order the reverse token content string
 %% ----------------------------------------------------------------------------	
 finalize({Type, String}) ->
