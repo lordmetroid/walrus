@@ -69,6 +69,6 @@ finalize({Type, String}) ->
 		tag ->
 			%% Convert the token to a tag
 			[First | Rest] = lists:flatten(lists:reverse(String)),
-			erl_syntax:tag([string:to_upper(First) | Rest])
+			erl_syntax:variable([string:to_upper(First) | Rest])
 	end.
 	
