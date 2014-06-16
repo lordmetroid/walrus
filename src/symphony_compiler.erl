@@ -58,17 +58,12 @@ add(Character, Tokens) ->
 	[{Type, [Character | String]} | Rest].
 
 %% ----------------------------------------------------------------------------
-% @spec finalize(atom, string()) -> Token
-% @doc Order the reverse token content string
+% @spec finalize(atom, string()) -> erl_syntax()
+% @doc Create a storable erlang syntax token
 %% ----------------------------------------------------------------------------	
 finalize({Type, String}) ->
-	case Type of
-		text ->
-			%% Convert the token to a section of text
-			erl_syntax:string(lists:flatten(lists:reverse(String)));
-		tag ->
-			%% Convert the token to a tag
-			[First | Rest] = lists:flatten(lists:reverse(String)),
-			erl_syntax:variable([string:to_upper(First) | Rest])
-	end.
-	
+	erl_syntax:tuple([
+		erl_syntax:atom(Type),
+		erl_syntax:string(lists:reverse(String))
+	]).
+
