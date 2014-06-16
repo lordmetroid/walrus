@@ -3,7 +3,7 @@
 -export([
 	make/1,
 	make/2,
-	make/1
+	make_template/1
 ]).
 
 %% ----------------------------------------------------------------------------
@@ -34,7 +34,7 @@ make(FilePath,Encoding) ->
 %% ----------------------------------------------------------------------------
 make_template(Template) ->
 	%% Compile without a filepath
-	compile(Template, []).
+	make_template(Template, []).
 
 make_template(Template, FilePath) when is_list(Template) ->
 	%% TODO: Add render() functionality
