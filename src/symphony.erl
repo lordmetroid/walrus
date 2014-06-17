@@ -21,8 +21,8 @@ make(FilePath) ->
 
 make(FilePath,Encoding) ->
 	case file:read_file(FilePath) of
-		{error, Reason} ->
-			{error, Reason};
+		{error, Error} ->
+			{error, Error};
 		{ok, Binary} ->
 			%% Convert binary to string
 			String = unicode:characters_to_list(Binary,Encoding),
