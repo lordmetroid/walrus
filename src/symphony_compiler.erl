@@ -15,7 +15,7 @@ scan(Template, Filename) ->
 scan([], _Filename,{_Row,_Column}, Tokens, _Errors, _Type) ->
 	%%TODO: print errors
 	[CurrentToken | Rest] = Tokens,
-	erl_syntax:lists([finalize(CurrentToken) | Rest]);
+	erl_syntax:list([finalize(CurrentToken) | Rest]);
 
 %% Text special characters
 scan("\n" ++ Rest, Filename,{Row,_Column}, Tokens,Errors, text) ->
