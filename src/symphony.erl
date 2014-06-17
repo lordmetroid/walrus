@@ -25,7 +25,7 @@ make(FilePath,Encoding) ->
 			{error, Reason};
 		{ok, Binary} ->
 			Template = unicode:characters_to_list(Binary,Encoding),
-			make_template(Template, FilePath)
+			{ok, make_template(Template, FilePath)}
 	end.
 
 %% ----------------------------------------------------------------------------
