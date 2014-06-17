@@ -24,8 +24,9 @@ make(FilePath,Encoding) ->
 		{error, Reason} ->
 			{error, Reason};
 		{ok, Binary} ->
-			Template = unicode:characters_to_list(Binary,Encoding),
-			{ok, make_template(Template, FilePath)}
+			%% Convert binary to string
+			String = unicode:characters_to_list(Binary,Encoding),
+			{ok, make_template(String, FilePath)}
 	end.
 
 %% ----------------------------------------------------------------------------
