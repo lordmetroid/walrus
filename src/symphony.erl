@@ -11,14 +11,14 @@
 
 %% ----------------------------------------------------------------------------
 % @spec make(TemplateString) -> syntaxTree()
-% @doc Compile a view file
+% @doc Compile a view
 %% ----------------------------------------------------------------------------
 make(TemplateString) ->
 	symphony_compiler:make(TemplateString)
 
 %% ----------------------------------------------------------------------------
 % @spec render(Token, Arguments) -> 
-% @doc Compile a view file
+% @doc render view token
 %% ----------------------------------------------------------------------------
 render({Type, String}, Arguments) ->
 	case Type of
