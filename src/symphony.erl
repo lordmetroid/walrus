@@ -2,8 +2,7 @@
 
 -export([
 	make/1,
-	make/2,
-	make_template/1
+	render/2
 ]).
 
 %% ----------------------------------------------------------------------------
@@ -11,32 +10,29 @@
 %% ----------------------------------------------------------------------------
 
 %% ----------------------------------------------------------------------------
-% @spec compile_file(FilePath) -> syntaxTree()
+% @spec make(TemplateString) -> syntaxTree()
 % @doc Compile a view file
 %% ----------------------------------------------------------------------------
-make(FilePath) ->
-	%%TODO: Detect encoding of file
-	%%TODO: Convert string to utf8 if necessary
-	make(FilePath,utf8).
+make(TemplateString) ->
+	symphony_compiler:make(TemplateString)
 
-make(FilePath,Encoding) ->
-	case file:read_file(FilePath) of
-		{error, Error} ->
-			{error, Error};
-		{ok, Binary} ->
-			%% Convert binary to string
-			String = unicode:characters_to_list(Binary,Encoding),
-			{ok, make_template(String, FilePath)}
+%% ----------------------------------------------------------------------------
+% @spec render(Token, Arguments) -> 
+% @doc Compile a view file
+%% ----------------------------------------------------------------------------
+render({Type, String}, Arguments) ->
+	case Type of
+		text ->
+			%% Template token is a text string
+			{ok, String};
+		variable ->
+			%% Template token is a variable
+			case lists:keyfind(String, 1, Arguments) of
+				false ->
+					%% Variable value not provided
+					{error, "No value for variable " ++ String ++ " provided"};
+				{String, Value} ->
+					%% Return variable value
+					{ok, Value}
+			end
 	end.
-
-%% ----------------------------------------------------------------------------
-% @spec compile(Template) -> syntaxTree()
-% @doc Compile template string
-%% ----------------------------------------------------------------------------
-make_template(Template) ->
-	%% Compile without a filepath
-	make_template(Template, []).
-
-make_template(Template, FilePath) when is_list(Template) ->
-	%% TODO: Add render() functionality
-	symphony_compiler:scan(Template, FilePath).
