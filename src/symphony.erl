@@ -36,7 +36,7 @@ render([{Type, String} | Rest], Arguments, Content, Errors) ->
 			case lists:keyfind(String, 1, Arguments) of
 				false ->
 					%% Variable value not provided
-					NewError = "No value for variable " ++String++ " provided",
+					NewError = "No value for variable " ++ String ++ " provided",
 					render(Rest, Arguments, Content, [NewError | Errors]);
 				{String, Value} ->
 					%% Return variable value
