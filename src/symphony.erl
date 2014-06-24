@@ -20,19 +20,30 @@ make(TemplateString) ->
 % @spec render(Token, Arguments) -> 
 % @doc render view token
 %% ----------------------------------------------------------------------------
-render({Type, String}, Arguments) ->
+render(Template, Arguments) ->
+	render(Template, Arguments, [], []).
+
+render([], Arguments, Content, Errors) ->
+	%% Return rendered results
+	{Content, Errors};
+render([{Type, String} | Rest], Arguments, Content, Errors) ->
 	case Type of
 		text ->
 			%% Template token is a text string
-			{ok, String};
+			render(Rest, Arguments, [String | Content], Errors)
 		variable ->
 			%% Template token is a variable
 			case lists:keyfind(String, 1, Arguments) of
 				false ->
 					%% Variable value not provided
-					{error, "No value for variable " ++ String ++ " provided"};
+					NewError = "No value for variable " ++String++ " provided",
+					render(Rest, Arguments, Content, [NewError | Errors]);
 				{String, Value} ->
 					%% Return variable value
-					{ok, Value}
+					render(Rest, Arguments, [Value | Content], Errors)
 			end
-	end.
+	end;
+render([Token | Rest], Arguments, Content, Errors) ->
+	%% Can not render unrecognized token
+	NewError = ["Unrecognized token ", Token],
+	render(Rest, Arguments, Content, [NewError | Errors]).
