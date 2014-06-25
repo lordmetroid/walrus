@@ -12,10 +12,9 @@ make(TemplateString) ->
 	make(TemplateString, {1,1}, [{text,[]}],[], text).
 
 %% End of file
-make([], {_Row,_Column}, Tokens, _Errors, _Type) ->
+make([], {_Row,_Column}, [CurrentToken | Rest], _Errors, _Type) ->
 	%% TODO: print errors
-	[CurrentToken | Rest] = Tokens,
-	erl_syntax:list([finalize(CurrentToken) | Rest]);
+	[finalize(CurrentToken) | Rest];
 
 %% Text special characters
 make("\n" ++ Rest, {Row,_Column}, Tokens,Errors, text) ->
