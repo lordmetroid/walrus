@@ -24,7 +24,7 @@ make("\n" ++ Rest, {Row,_Column}, Tokens,Errors, text) ->
 %% TODO: Find misplaced start and end variable token errors
 make("<?" ++ Rest, {Row,Column}, Tokens,Errors, text) ->
 	make(Rest, {Row,Column+2}, create(variable,Tokens),Errors, variable);
-make("?>" ++ Rest, Row,Column}, Tokens,Errors, variable) ->
+make("?>" ++ Rest, {Row,Column}, Tokens,Errors, variable) ->
 	make(Rest, {Row,Column+2}, create(text,Tokens),Errors, text);
 
 make(" " ++ Rest, {Row,Column}, Tokens,Errors, variable) ->
@@ -44,16 +44,14 @@ make([Character | Rest], {Row,Column}, Tokens,Errors, Type) ->
 % @spec create(atom, list()) -> Tokens
 % @doc Create new token
 %% ----------------------------------------------------------------------------
-create(Type, Tokens) ->
-	[Token | Rest] = Tokens,
+create(Type, [Token | Rest]) ->
 	[{Type,[]}, finalize(Token) | Rest].
 
 %% ----------------------------------------------------------------------------
 % @spec add(character(), list()) -> Tokens::list()
 % @doc Add new character to token
 %% ----------------------------------------------------------------------------
-add(Character, Tokens) ->
-	[{Type, String} | Rest] = Tokens,
+add(Character, [{Type, String} | Rest]) ->
 	[{Type, [Character | String]} | Rest].
 
 %% ----------------------------------------------------------------------------

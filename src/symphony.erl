@@ -14,7 +14,7 @@
 % @doc Compile a view
 %% ----------------------------------------------------------------------------
 make(TemplateString) ->
-	symphony_compiler:make(TemplateString)
+	symphony_compiler:make(TemplateString).
 
 %% ----------------------------------------------------------------------------
 % @spec render(Token, Arguments) -> 
@@ -23,14 +23,14 @@ make(TemplateString) ->
 render(Template, Arguments) ->
 	render(Template, Arguments, [], []).
 
-render([], Arguments, Content, Errors) ->
+render([], _Arguments, Content, Errors) ->
 	%% Return rendered results
 	{Content, Errors};
 render([{Type, String} | Rest], Arguments, Content, Errors) ->
 	case Type of
 		text ->
 			%% Template token is a text string
-			render(Rest, Arguments, [String | Content], Errors)
+			render(Rest, Arguments, [String | Content], Errors);
 		variable ->
 			%% Template token is a variable
 			case lists:keyfind(String, 1, Arguments) of
