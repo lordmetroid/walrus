@@ -1,4 +1,4 @@
--module(symphony).
+-module(symphony_printer).
 
 -export([
 	render/4
