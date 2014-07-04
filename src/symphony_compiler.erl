@@ -14,7 +14,7 @@ make(TemplateString) ->
 %% End of file
 make([], {_Row,_Column}, [CurrentToken | Rest], _Errors, _Type) ->
 	%% TODO: print errors
-	[finalize(CurrentToken) | Rest];
+	{ok, [finalize(CurrentToken) | Rest]};
 
 %% Text special characters
 make("\n" ++ Rest, {Row,_Column}, Tokens,Errors, text) ->
