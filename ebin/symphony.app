@@ -3,6 +3,7 @@
 	{vsn, "0.1"},
 	{modules, [
 		symphony,
-		symphony_compiler
+		symphony_compiler,
+		symphony_printer
 	]}
 ]}.
