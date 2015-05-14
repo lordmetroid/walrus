@@ -3,6 +3,9 @@
 	{vsn, "1"},
 
 	{applications, [
+		kernel,
+		stdlib,
+		conductor
 	]},
 
 	{modules, [
