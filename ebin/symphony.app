@@ -1,8 +1,13 @@
+%% -*- mode: Erlang; -*-
+
 {application, symphony, [
 	{description, "Strict view template engine"},
 	{vsn, "1"},
 
 	{applications, [
+		kernel,
+		stdlib
+		conductor
 	]},
 
 	{modules, [

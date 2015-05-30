@@ -1,14 +1,16 @@
 # Compiled source
 *.beam
+_rel/
+
+# Backups
+*.swp
 
 # Logs
 *.dump
 
-# Swap
-.swp
-
 # Configuration files
 *.conf
+.rebar/
 
 # Dependencies
 /deps
