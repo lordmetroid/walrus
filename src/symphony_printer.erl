@@ -1,13 +1,14 @@
 -module(symphony_printer).
 
 -export([
-	render/4
+	render/2
 ]).
 
-%% ----------------------------------------------------------------------------
+render(Template, Arguments) ->
+	render(Template, Arguments, [], []).
+
 % @spec render(Token, Arguments) -> {ok, [syntaxTree()]}
 % @doc render view token
-%% ----------------------------------------------------------------------------
 render([], _Arguments, Content, Errors) ->
 	%% Return rendered results
 	case Errors of
