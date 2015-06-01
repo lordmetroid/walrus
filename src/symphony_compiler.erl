@@ -9,6 +9,7 @@
 % @doc Scan and parse template into erlang syntax form
 %% ----------------------------------------------------------------------------
 make(TemplateString) ->
+io:format("~s~n", [TemplateString]),
 	make(TemplateString, {1,1}, [{text,[]}],[], text).
 
 %% End of file
