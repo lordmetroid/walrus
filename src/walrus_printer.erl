@@ -1,4 +1,4 @@
--module(symphony_printer).
+-module(walrus_printer).
 
 -export([
 	render/2

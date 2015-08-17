@@ -1,4 +1,4 @@
--module(symphony_compiler).
+-module(walrus_compiler).
 
 -export([
 	make/1
@@ -22,9 +22,9 @@ make("\n" ++ Rest, {Row,_Column}, Tokens,Errors, text) ->
 
 %% Tag special characters
 %% TODO: Find misplaced start and end variable token errors
-make("<?" ++ Rest, {Row,Column}, Tokens,Errors, text) ->
+make("{{" ++ Rest, {Row,Column}, Tokens,Errors, text) ->
 	make(Rest, {Row,Column+2}, create(variable,Tokens),Errors, variable);
-make("?>" ++ Rest, {Row,Column}, Tokens,Errors, variable) ->
+make("}}" ++ Rest, {Row,Column}, Tokens,Errors, variable) ->
 	make(Rest, {Row,Column+2}, create(text,Tokens),Errors, text);
 
 make(" " ++ Rest, {Row,Column}, Tokens,Errors, variable) ->

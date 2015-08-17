@@ -1,4 +1,4 @@
--module(symphony).
+-module(walrus).
 
 -export([
 	make/1,
@@ -12,9 +12,9 @@
 % @spec make(TemplateString) -> syntaxTree()
 % @doc Compile a view
 make(TemplateString) ->
-	symphony_compiler:make(TemplateString).
+	walrus_compiler:make(TemplateString).
 
 % @spec render(Token, Arguments) -> 
 % @doc render view token
 render(Template, Arguments) ->
-	symphony_printer:render(Template, Arguments).
+	walrus_printer:render(Template, Arguments).

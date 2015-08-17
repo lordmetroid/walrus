@@ -1,7 +1,7 @@
 %% -*- mode: Erlang; -*-
 
-{application, symphony, [
-	{description, "Strict view template engine"},
+{application, walrus, [
+	{description, "Strict mustache view template engine"},
 	{vsn, "1"},
 
 	{applications, [
@@ -11,9 +11,9 @@
 	]},
 
 	{modules, [
-		symphony,
-		symphony_compiler,
-		symphony_printer
+		walrus,
+		walrus_compiler,
+		walrus_printer
 	]},
 	{registered, [
 	]}
